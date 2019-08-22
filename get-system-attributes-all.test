@@ -1,0 +1,101 @@
+#
+# Script to get all the attributes of the system.
+#
+# A top-level file/immediate caller will provide the values for $uri
+
+# Usage ./ipptool -d uri={system-uri} get-system-attributes-all.test
+
+{
+	NAME "Extract all the attributes of the system with uri $uri"
+
+	OPERATION Get-System-Attributes
+	VERSION 2.0
+
+	GROUP operation-attributes-tag
+	ATTR charset attributes-charset utf-8
+	ATTR naturalLanguage attributes-natural-language en
+	ATTR uri system-uri $uri
+	ATTR 1setOf type2 keyword requested-attributes all
+
+	STATUS successful-ok
+
+	EXPECT attributes-charset OF-TYPE charset IN-GROUP operation-attributes-tag
+	EXPECT attributes-natural-language OF-TYPE naturalLanguage IN-GROUP operation-attributes-tag
+	?EXPECT status-message OF-TYPE text(255) IN-GROUP operation-attributes-tag 
+	?EXPECT detailed-status-message OF-TYPE text(MAX) IN-GROUP operation-attributes-tag
+
+	#system description attributes
+	EXPECT charset-configured OF-TYPE charset IN-GROUP system-attributes-tag
+	EXPECT charset-supported OF-TYPE 1setOf charset IN-GROUP system-attributes-tag
+	EXPECT document-format-supported OF-TYPE 1setOf mimeMediaType IN-GROUP system-attributes-tag
+	EXPECT generated-natural-language-supported OF-TYPE 1setOf naturalLanguage IN-GROUP system-attributes-tag
+
+	EXPECT ipp-features-supported OF-TYPE 1setOf type2 keyword IN-GROUP system-attributes-tag
+	EXPECT ipp-versions-supported OF-TYPE 1setOf type2 keyword IN-GROUP system-attributes-tag
+	EXPECT multiple-document-printers-supported OF-TYPE boolean IN-GROUP system-attributes-tag
+	EXPECT natural-language-configured OF-TYPE naturalLanguage IN-GROUP system-attributes-tag
+
+	EXPECT operations-supported OF-TYPE 1setOf type2 enum IN-GROUP system-attributes-tag
+	?EXPECT power-calendar-policy-col OF-TYPE 1setOf collection IN-GROUP system-attributes-tag
+	?EXPECT power-event-policy-col OF-TYPE 1setOf collection IN-GROUP system-attributes-tag
+	?EXPECT power-timeout-policy-col OF-TYPE 1setOf collection IN-GROUP system-attributes-tag
+
+	EXPECT printer-creation-attributes-supported OF-TYPE 1setOf keyword IN-GROUP system-attributes-tag
+	EXPECT printer-service-type-supported OF-TYPE 1setOf type2 keyword IN-GROUP system-attributes-tag
+	EXPECT resource-format-supported OF-TYPE 1setOf mimeMediaType IN-GROUP system-attributes-tag
+	EXPECT resource-type-supported OF-TYPE 1setOf type2 keyword IN-GROUP system-attributes-tag
+
+	EXPECT resource-settable-attributes-supported OF-TYPE 1setOf keyword IN-GROUP system-attributes-tag
+	EXPECT system-contact-col OF-TYPE collection IN-GROUP system-attributes-tag
+	EXPECT system-current-time OF-TYPE dateTime IN-GROUP system-attributes-tag
+	EXPECT system-default-printer-id OF-TYPE integer(1:65535) IN-GROUP system-attributes-tag
+	EXPECT system-geo-location OF-TYPE uri IN-GROUP system-attributes-tag
+
+	EXPECT system-info OF-TYPE text(127) IN-GROUP system-attributes-tag
+	EXPECT system-location OF-TYPE text(127) IN-GROUP system-attributes-tag
+	EXPECT system-make-and-model OF-TYPE text(127) IN-GROUP system-attributes-tag
+	EXPECT system-mandatory-printer-attributes OF-TYPE 1setOf type2 keyword IN-GROUP system-attributes-tag
+	?EXPECT system-message-from-operator OF-TYPE text(127) IN-GROUP system-attributes-tag
+
+	EXPECT system-name OF-TYPE name(127) IN-GROUP system-attributes-tag
+	EXPECT system-settable-attributes-supported OF-TYPE 1setOf keyword IN-GROUP system-attributes-tag
+	EXPECT system-xri-supported OF-TYPE 1setOf collection IN-GROUP system-attributes-tag
+
+
+	#system status attributes
+
+	?EXPECT power-log-col OF-TYPE 1setOf collection IN-GROUP system-attributes-tag
+	?EXPECT power-state-capabilities-col OF-TYPE 1setOf collection IN-GROUP system-attributes-tag
+	?EXPECT power-state-counters-col OF-TYPE 1setOf collection IN-GROUP system-attributes-tag
+	?EXPECT power-state-monitor-col OF-TYPE collection IN-GROUP system-attributes-tag
+	?EXPECT power-state-transitions-col OF-TYPE 1setOf collection IN-GROUP system-attributes-tag
+
+
+	EXPECT system-config-change-date-time OF-TYPE dateTime IN-GROUP system-attributes-tag
+	EXPECT system-config-change-time OF-TYPE integer(0:MAX) IN-GROUP system-attributes-tag
+	EXPECT system-config-changes OF-TYPE integer(0:MAX) IN-GROUP system-attributes-tag
+	EXPECT system-configured-printers OF-TYPE 1setOf collection|no-value IN-GROUP system-attributes-tag
+	EXPECT system-configured-resources OF-TYPE 1setOf collection|no-value IN-GROUP system-attributes-tag
+
+	?EXPECT system-impressions-completed OF-TYPE integer(0:MAX) IN-GROUP system-attributes-tag
+	?EXPECT system-impressions-completed-col OF-TYPE collection IN-GROUP system-attributes-tag
+	?EXPECT system-media-sheets-completed OF-TYPE integer(0:MAX) IN-GROUP system-attributes-tag
+	?EXPECT system-media-sheets-completed-col OF-TYPE collection IN-GROUP system-attributes-tag
+	?EXPECT system-pages-completed OF-TYPE integer(0:MAX) IN-GROUP system-attributes-tag
+
+	?EXPECT system-pages-completed-col OF-TYPE collection IN-GROUP system-attributes-tag
+	?EXPECT system-serial-number OF-TYPE IN-GROUP system-attributes-tag
+	EXPECT system-state OF-TYPE IN-GROUP system-attributes-tag
+	EXPECT system-state-change-date-time OF-TYPE IN-GROUP system-attributes-tag
+	EXPECT system-state-change-time OF-TYPE IN-GROUP system-attributes-tag
+
+
+	EXPECT system-state-message OF-TYPE IN-GROUP system-attributes-tag
+	EXPECT system-state-reasons OF-TYPE IN-GROUP system-attributes-tag
+	?EXPECT system-strings-languages-supported OF-TYPE IN-GROUP system-attributes-tag
+	?EXPECT system-strings-uri OF-TYPE IN-GROUP system-attributes-tag
+	EXPECT system-up-time OF-TYPE IN-GROUP system-attributes-tag
+	EXPECT system-uuid OF-TYPE IN-GROUP system-attributes-tag
+
+}
+	

@@ -1,0 +1,30 @@
+#Test Script to send data to a Resource Object
+# USAGE : $resource-format, $uri, $resource-id, $filename
+# Usage ./ipptool -d uri={system-uri} resource-id={value} filename={path/to/file} resource-format={jpeg etc} send-resource-data.test
+
+{
+	NAME "Send-Resource-Data from file "$filename" to Resource: $resource-id"
+	OPERATION Send-Resource-Data
+	VERSION 2.0
+
+	GROUP operation-attributes-tag
+	ATTR charset attributes-charset utf-8
+	ATTR naturalLanguage attributes-natural-language en
+	ATTR uri system-uri $uri
+	ATTR integer(1:MAX) resource-id $resource-id
+	ATTR mimeMediaType resource-format $resource-format
+
+	FILE $filename
+
+	STATUS successful-ok
+
+	EXPECT attributes-charset OF-TYPE charset IN-GROUP operation-attributes-tag
+	EXPECT attributes-natural-language OF-TYPE naturalLanguage IN-GROUP operation-attributes-tag
+	EXPECT status-message OF-TYPE text(255) IN-GROUP operation-attributes-tag
+	EXPECT detailed-status-message OF-TYPE text(MAX) IN-GROUP operation-attributes-tag
+
+	EXPECT resource-id OF_TYPE (integer(1:MAX)) IN-GROUP resource-attributes-tag
+	EXPECT resource-uuid OF-TYPE uri(45) IN-GROUP resource-attributes-tag
+	EXPECT resource-state OF-TYPE (type1 enum) IN-GROUP resource-attributes-tag WITH-VALUE available
+	EXPECT resource-state-reasons OF-TYPE (1setOf type2 keyword) IN-GROUP resource-attributes-tag
+}

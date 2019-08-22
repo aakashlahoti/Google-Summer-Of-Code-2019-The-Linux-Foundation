@@ -1,0 +1,63 @@
+#
+# Script to get all the status-attributes of the system.
+#
+# A top-level file/immediate caller will provide the values for $uri
+
+# Usage ./ipptool -d uri={system-uri} get-system-attributes-status.test
+
+{
+	NAME "Extract all the system status attributes of the system with uri $uri"
+
+	OPERATION Get-System-Attributes
+	VERSION 2.0
+
+	GROUP operation-attributes-tag
+	ATTR charset attributes-charset utf-8
+	ATTR naturalLanguage attributes-natural-language en
+	ATTR uri system-uri $uri
+	ATTR 1setOf type2 keyword requested-attributes system-status
+
+	STATUS successful-ok
+
+	EXPECT attributes-charset OF-TYPE charset IN-GROUP operation-attributes-tag
+	EXPECT attributes-natural-language OF-TYPE naturalLanguage IN-GROUP operation-attributes-tag
+	?EXPECT status-message OF-TYPE text(255) IN-GROUP operation-attributes-tag 
+	?EXPECT detailed-status-message OF-TYPE text(MAX) IN-GROUP operation-attributes-tag
+
+	#system status attributes
+
+	?EXPECT power-log-col OF-TYPE 1setOf collection IN-GROUP system-attributes-tag
+	?EXPECT power-state-capabilities-col OF-TYPE 1setOf collection IN-GROUP system-attributes-tag
+	?EXPECT power-state-counters-col OF-TYPE 1setOf collection IN-GROUP system-attributes-tag
+	?EXPECT power-state-monitor-col OF-TYPE collection IN-GROUP system-attributes-tag
+	?EXPECT power-state-transitions-col OF-TYPE 1setOf collection IN-GROUP system-attributes-tag
+
+
+	EXPECT system-config-change-date-time OF-TYPE dateTime IN-GROUP system-attributes-tag
+	EXPECT system-config-change-time OF-TYPE integer(0:MAX) IN-GROUP system-attributes-tag
+	EXPECT system-config-changes OF-TYPE integer(0:MAX) IN-GROUP system-attributes-tag
+	EXPECT system-configured-printers OF-TYPE 1setOf collection|no-value IN-GROUP system-attributes-tag
+	EXPECT system-configured-resources OF-TYPE 1setOf collection|no-value IN-GROUP system-attributes-tag
+
+	?EXPECT system-impressions-completed OF-TYPE integer(0:MAX) IN-GROUP system-attributes-tag
+	?EXPECT system-impressions-completed-col OF-TYPE collection IN-GROUP system-attributes-tag
+	?EXPECT system-media-sheets-completed OF-TYPE integer(0:MAX) IN-GROUP system-attributes-tag
+	?EXPECT system-media-sheets-completed-col OF-TYPE collection IN-GROUP system-attributes-tag
+	?EXPECT system-pages-completed OF-TYPE integer(0:MAX) IN-GROUP system-attributes-tag
+
+	?EXPECT system-pages-completed-col OF-TYPE collection IN-GROUP system-attributes-tag
+	?EXPECT system-serial-number OF-TYPE IN-GROUP system-attributes-tag
+	EXPECT system-state OF-TYPE IN-GROUP system-attributes-tag
+	EXPECT system-state-change-date-time OF-TYPE IN-GROUP system-attributes-tag
+	EXPECT system-state-change-time OF-TYPE IN-GROUP system-attributes-tag
+
+
+	EXPECT system-state-message OF-TYPE IN-GROUP system-attributes-tag
+	EXPECT system-state-reasons OF-TYPE IN-GROUP system-attributes-tag
+	?EXPECT system-strings-languages-supported OF-TYPE IN-GROUP system-attributes-tag
+	?EXPECT system-strings-uri OF-TYPE IN-GROUP system-attributes-tag
+	EXPECT system-up-time OF-TYPE IN-GROUP system-attributes-tag
+	EXPECT system-uuid OF-TYPE IN-GROUP system-attributes-tag
+
+}
+	

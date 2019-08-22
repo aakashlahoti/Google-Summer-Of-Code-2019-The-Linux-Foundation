@@ -1,0 +1,29 @@
+#Test Script to Shutdown a Printer in the System
+# USAGE : will require $printer-id, system-uri : $uri. Will be provided by a top-level file. 
+# Usage ./ipptool -d uri={system-uri} printer-id={value} shutdown-one-printer.test
+
+{
+	NAME "Shutdown the Printer $printer-id"
+
+	OPERATION Shutdown-One-Printer
+	VERSION 2.0
+
+	GROUP operation-attributes-tag
+	ATTR charset attributes-charset utf-8
+	ATTR naturalLanguage attributes-natural-language en
+	ATTR uri system-uri $uri
+	ATTR integer(1:65535) printer-id $printer-id
+
+	STATUS successful-ok
+
+	EXPECT attributes-charset OF-TYPE charset IN-GROUP operation-attributes-tag
+	EXPECT attributes-natural-language OF-TYPE naturalLanguage IN-GROUP operation-attributes-tag
+	?EXPECT status-message OF-TYPE text(255) IN-GROUP operation-attributes-tag 
+	?EXPECT detailed-status-message OF-TYPE text(MAX) IN-GROUP operation-attributes-tag
+
+	EXPECT printer-xri-supported OF-TYPE (1setOf collection) IN-GROUP printer-attributes-tag
+	EXPECT printer-state OF-TYPE (type1 enum) IN-GROUP printer-attributes-tag WITH-VALUE stopped
+	EXPECT printer-state-reasons OF-TYPE (1setOf type2 keyword) IN-GROUP printer-attributes-tag WITH-VALUE shutdown
+	EXPECT printer-is-accepting-jobs OF-TYPE boolean IN-GROUP printer-attributes-tag
+
+} 

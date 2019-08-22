@@ -1,0 +1,50 @@
+#
+# Script to get all the attributes of a resource on the system.
+#
+# A top-level file/immediate caller will provide the values for $uri, $resource-id
+
+# Usage ./ipptool -d uri={system-uri} resource-id={value} get-resource-attributes-all.test
+
+{
+	NAME "Extract all the attributes of the Resource:$resource-id in the system"
+
+	OPERATION Get-Resource-Attributes
+	VERSION 2.0
+
+	GROUP operation-attributes-tag
+	ATTR charset attributes-charset utf-8
+	ATTR naturalLanguage attributes-natural-language en
+	ATTR uri system-uri $uri
+	ATTR integer(1:MAX) resource-id $resource-id
+	ATTR 1setOf type2 keyword requested-attributes all
+
+	STATUS successful-ok
+
+	EXPECT attributes-charset OF-TYPE charset IN-GROUP operation-attributes-tag
+	EXPECT attributes-natural-language OF-TYPE naturalLanguage IN-GROUP operation-attributes-tag
+	EXPECT status-message OF-TYPE text(255) IN-GROUP operation-attributes-tag 
+	EXPECT detailed-status-message OF-TYPE text(MAX) IN-GROUP operation-attributes-tag
+
+	EXPECT resource-id OF-TYPE integer(1:MAX) IN-GROUP resource-attributes-tag
+	EXPECT resource-uuid OF-TYPE uri(45) IN-GROUP resource-attributes-tag DEFINE-VALUE resource-uuid
+	EXPECT resource-state OF-TYPE type1 enum IN-GROUP resource-attributes-tag
+	EXPECT resource-state-reasons OF-TYPE 1setOf type2 keyword IN-GROUP resource-attributes-tag
+
+	EXPECT resource-info OF-TYPE text(MAX) IN-GROUP resource-attributes-tag
+	EXPECT resource-name OF-TYPE name(MAX) IN-GROUP resource-attributes-tag
+
+	EXPECT date-time-at-canceled OF-TYPE dateTime IN-GROUP resource-attributes-tag
+	EXPECT date-time-at-creation OF-TYPE dateTime IN-GROUP resource-attributes-tag
+	EXPECT date-time-at-installed OF-TYPE dateTime IN-GROUP resource-attributes-tag
+	EXPECT resource-data-uri OF-TYPE uri IN-GROUP resource-attributes-tag
+	EXPECT resource-format OF-TYPE mimeMediaType IN-GROUP resource-attributes-tag
+	EXPECT resource-k-octets OF-TYPE integer(0:MAX) IN-GROUP resource-attributes-tag
+	EXPECT resource-string-version OF-TYPE text(MAX) IN-GROUP resource-attributes-tag
+	EXPECT resource-type OF-TYPE type2 keyword IN-GROUP resource-attributes-tag
+	EXPECT resource-use-count OF-TYPE integer(0:MAX) IN-GROUP resource-attributes-tag
+	EXPECT resource-version OF-TYPE octetString(64) IN-GROUP resource-attributes-tag
+	EXPECT time-at-canceled OF-TYPE integer(MIN:MAX) IN-GROUP resource-attributes-tag
+	EXPECT time-at-creation OF-TYPE integer(MIN:MAX) IN-GROUP resource-attributes-tag
+	EXPECT time-at-installed OF-TYPE integer(MIN:MAX) IN-GROUP resource-attributes-tag
+
+}

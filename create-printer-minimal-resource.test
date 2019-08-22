@@ -1,0 +1,65 @@
+# Create a Printer - Minimal Test
+# We test the case of "CLIENT MUST" type attributes
+
+# Usage ./ipptool -d uri={system-uri} printer-service-type={value} {All Basic Printer Description Attributes={value}} {All Common Printer Description Attributes={value}} create-printer-fault.test
+
+# "Please Use the Exact Variable Name as given below"
+# Basic Printer Description Attributes are taken to be:
+#	 color-supported
+#    printer-geo-location
+#    printer-info
+#    printer-location
+#    printer-make-and-model
+#    printer-name
+#    printer-organization
+#    printer-organizational-unit'
+
+# Common Printer Description Attributes are taken to be:
+#    copies-default
+#    copies-supported
+#    document-format-default
+#    document-format-supported
+#    media-col-default
+#    media-col-database
+#    media-default
+#    media-size-supported
+#    media-supported
+#    print-quality-default
+#    print-quality-supported
+
+{
+	NAME "Minimal Create-Printer Test"
+	OPERATION Create-Printer
+
+	GROUP operation-attributes-tag
+	ATTR charset attributes-charset utf-8
+	ATTR naturalLanguage attributes-natural-language en
+	ATTR type2 keyword printer-service-type $printer-service-type
+	ATTR uri system-uri $uri
+
+	GROUP printer-attributes-tag
+	ATTR boolean color-supported $color-supported
+	ATTR uri printer-geo-location $printer-geo-location
+	ATTR text(127) printer-info $printer-info
+	ATTR text(127) printer-location $printer-location
+	ATTR text(127) printer-make-and-model $printer-make-and-model
+	ATTR name(127) printer-name $printer-name
+	ATTR 1setOf text(MAX) printer-organization $printer-organization
+	ATTR 1setOf text(MAX) printer-organizational-unit $printer-organizational-unit
+	
+	ATTR integer(1:MAX) copies-default $copies-default
+	ATTR rangeOfInteger(1:MAX) copies-supported $copies-supported
+	ATTR mimeMediaType document-format-default $document-format-default
+	ATTR 1setOf mimeMediaType document-format-supported $document-format-supported
+	ATTR collection media-col-default $media-col-default
+	ATTR keyword media-col-database $media-col-database
+	ATTR type2 keyword media-default $media-default
+	ATTR 1setOf collection media-size-supported $media-size-supported
+	ATTR 1setOf type2 keyword media-supported $media-supported
+	ATTR type2 enum print-quality-default $print-quality-default
+	ATTR 1setOf type2 enum print-quality-supported $print-quality-supported
+
+	GROUP subscription-attributes-tag
+	ATTR type2 keyword notify-pull-method
+	ATTR 1setOf type2 keyword notify-events 
+}

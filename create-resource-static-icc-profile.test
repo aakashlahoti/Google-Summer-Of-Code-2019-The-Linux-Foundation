@@ -1,0 +1,106 @@
+#
+# Script to create a static-icc-profile resource on the system.
+#
+# A top-level file/immediate caller will provide the values for $uri, $resource-string-version, $resource-version, $resource-natural-language, $resource-info, $resource-name, $filename, $resource-format
+
+# Usage ./ipptool -d uri={system-uri} resource-string-version={value} resource-version={value} resource-natural-language={value} resource-info={value} resource-name={value} filename={path/to/file} resource-format={value} create-resource-static-icc-profile.test
+
+
+{
+	NAME "Create-Resource Static-ICC-Profile"
+
+	OPERATION Create-Resource
+	VERSION 2.0
+
+	GROUP operation-attributes-tag
+	ATTR charset attributes-charset utf-8
+	ATTR naturalLanguage attributes-natural-language en
+	ATTR uri system-uri $uri
+	ATTR keyword resource-type static-icc-profile
+	ATTR text(MAX) resource-string-version $resource-string-version
+	ATTR octetString(16) resource-version $resource-version
+
+	GROUP resource-attributes-tag
+	ATTR text resource-info $resource-info
+	ATTR name resource-name $resource-name
+
+	GROUP subscription-attributes-tag
+	ATTR type2 keyword notify-pull-method
+	ATTR 1setOf type2 keyword notify-events
+
+	STATUS successful-ok
+
+	EXPECT attributes-charset OF-TYPE charset IN-GROUP operation-attributes-tag
+	EXPECT attributes-natural-language OF-TYPE naturalLanguage IN-GROUP operation-attributes-tag
+	EXPECT status-message OF-TYPE text(255) IN-GROUP operation-attributes-tag 
+	EXPECT detailed-status-message OF-TYPE text(MAX) IN-GROUP operation-attributes-tag
+	EXPECT resource-format-accepted OF-TYPE (1setOf mimeMediaType) IN-GROUP operation-attributes-tag DEFINE-VALUE resource-format-accepted
+	DISPLAY resource-format-accepted
+	EXPECT resource-id OF-TYPE integer(1:MAX) IN-GROUP resource-attributes-tag DEFINE-VALUE resource-id
+	EXPECT resource-uuid OF-TYPE uri(45) IN-GROUP resource-attributes-tag DEFINE-VALUE resource-uuid
+	EXPECT resource-state OF-TYPE type1 enum IN-GROUP resource-attributes-tag WITH-VALUE pending
+	EXPECT resource-state-reasons OF-TYPE 1setOf type2 keyword IN-GROUP resource-attributes-tag
+
+	DISPLAY resource-id
+}
+
+{
+	SKIP-PREVIOUS-ERROR yes
+	NAME "Send-Resource-Data for Static ICC Profile $resource-id"
+	OPERATION Send-Resource-Data
+	VERSION 2.0
+
+	GROUP operation-attributes-tag
+	ATTR charset attributes-charset utf-8
+	ATTR naturalLanguage attributes-natural-language en
+	ATTR uri system-uri $uri
+	ATTR integer(1:MAX) resource-id $resource-id
+	ATTR mimeMediaType resource-format $resource-format
+
+	FILE $filename
+
+	STATUS successful-ok
+
+	EXPECT attributes-charset OF-TYPE charset IN-GROUP operation-attributes-tag
+	EXPECT attributes-natural-language OF-TYPE naturalLanguage IN-GROUP operation-attributes-tag
+	EXPECT status-message OF-TYPE text(255) IN-GROUP operation-attributes-tag
+	EXPECT detailed-status-message OF-TYPE text(MAX) IN-GROUP operation-attributes-tag
+
+	EXPECT resource-id OF_TYPE (integer(1:MAX)) IN-GROUP resource-attributes-tag
+	EXPECT resource-uuid OF-TYPE uri(45) IN-GROUP resource-attributes-tag
+	EXPECT resource-state OF-TYPE (type1 enum) IN-GROUP resource-attributes-tag WITH-VALUE available
+	EXPECT resource-state-reasons OF-TYPE (1setOf type2 keyword) IN-GROUP resource-attributes-tag
+
+}
+
+{
+	SKIP-PREVIOUS-ERROR yes
+	NAME "Install the Resource - $resource-id on the System"
+
+	OPERATION Install-Resource
+	VERSION 2.0
+
+	GROUP operation-attributes-tag
+	ATTR charset attributes-charset utf-8
+	ATTR naturalLanguage attributes-natural-language en
+	ATTR uri system-uri $uri
+	ATTR integer(1:MAX) resource-id $resource-id
+
+	STATUS successful-ok
+
+	EXPECT attributes-charset OF-TYPE charset IN-GROUP operation-attributes-tag
+	EXPECT attributes-natural-language OF-TYPE naturalLanguage IN-GROUP operation-attributes-tag
+	EXPECT status-message OF-TYPE text(255) IN-GROUP operation-attributes-tag
+	EXPECT detailed-status-message OF-TYPE text(MAX) IN-GROUP operation-attributes-tag
+
+	#A small Error in System document, wrong subsection number
+	
+	EXPECT resource-id OF-TYPE (integer(1:MAX) IN-GROUP resource-attributes-tag DEFINE-VALUE resource-id
+	EXPECT resource-uuid OF-TYPE uri(45) IN-GROUP resource-attributes-tag DEFINE-VALUE resource-uuid
+
+	#Under the current formal system its impossible to write either resource-state is INSTALLED or reason is INSTALL-REQUESTED
+
+	EXPECT resource-state OF-TYPE (type1 enum) IN-GROUP resource-attributes-tag WITH-VALUE pending
+	EXPECT resource-state-reasons OF-TYPE (1setOf type2 keyword) IN-GROUP resource-attributes-tag
+} 
+

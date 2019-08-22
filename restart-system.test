@@ -1,0 +1,27 @@
+# Restart-System
+# Test Script to Restart the entire system which entails shutdown of all printers, installation of pending resources, reboot and startup of all printers in 'stopped' state, until there is an exceptional reason.
+
+# Usage ./ipptool -d uri={system-uri} restart-system.test
+
+{
+	NAME "Restart the entire system"
+
+	OPERATION Restart-System
+	VERSION 2.0
+
+	GROUP operation-attributes-tag
+	ATTR charset attributes-charset utf-8
+	ATTR naturalLanguage attributes-natural-language en
+	ATTR uri system-uri $uri
+
+	STATUS successful-ok
+
+	EXPECT attributes-charset OF-TYPE charset IN-GROUP operation-attributes-tag
+	EXPECT attributes-natural-language OF-TYPE naturalLanguage IN-GROUP operation-attributes-tag
+	?EXPECT status-message OF-TYPE text(255) IN-GROUP operation-attributes-tag
+	?EXPECT detailed-status-message OF-TYPE text(MAX) IN-GROUP operation-attributes-tag
+	EXPECT restart-get-interval OF-TYPE integer(0:MAX) IN-GROUP operation-attributes-tag
+
+	EXPECT system-state OF-TYPE type1 enum IN-GROUP system-attributes-tag WITH-VALUE stopped
+	EXPECT system-state-reasons OF-TYPE 1setOf type2 keyword  IN-GROUP system-attributes-tag WITH-VALUE starting|no-value
+} 
