@@ -1,0 +1,64 @@
+#
+# Script to create Resource-Subscription(s) for a resource on the system.
+# Since the test is static we will create two subscription objects, each with some of the subscription-template-attributes
+# define in RFC3995, Section 5.3, Table 1 
+# Developer is strongly advised to read section 5.1, of RFC3995
+# Response structure is given in 11.1.1.2 : RFC3995
+# 
+# A top-level file will provide the values for $uri, $notify-resource-id (target resource) and the follwing Template attributes:
+# >notify-recipient-uri (uri)
+# >notify-events (1setOf type2 keyword)
+# >notify-lease-duration (integer(0:MAX)), in seconds
+# >notify-time-interval (integer(0:MAX)), 
+#
+# !!Since this is a static test, we assume that the resource supports all the template attributes provided and has a 'PUSH-DELIVERY METHOD'
+# Usage:
+# ./ipptool -d uri={system-uri} notify-resource-id={value} notify-recipient-uri={uri} notify-events={1setOf type2 keyword} notify-lease-duration={integer} notify-time-interval={integer} create-resource-subscriptions-pushMethod.test
+
+{
+	NAME "Creating two subscriptions for the resource object $notify-resource-id, in the system $uri"
+
+	OPERATION Create-Resource-Subscriptions
+	VERSION 2.0
+
+	GROUP operation-attributes-tag
+	ATTR charset attributes-charset utf-8
+	ATTR naturalLanguage attributes-natural-language en
+	ATTR uri system-uri $uri
+	ATTR integer(1:MAX) notify-resource-id $notify-resource-id
+
+	# subscription object 1
+	# notify-lease-duration is 0 and notify-time-interval is DEFAULT
+
+	GROUP subscription-attributes-tag
+	ATTR charset notify-charset utf-8
+	ATTR naturalLanguage notify-natural-language en
+
+	ATTR uri notify-recipient-uri $notify-recipient-uri
+	ATTR 1setOf type2 keyword notify-events $notify-events 
+	ATTR 1setOf type2 keyword notify-attributes $notify-attributes 
+
+
+	#subscription object 2
+	GROUP subscription-attributes-tag
+
+	ATTR charset notify-charset utf-8
+	ATTR naturalLanguage notify-natural-language en
+
+	ATTR uri notify-recipient-uri $notify-recipient-uri
+	ATTR 1setOf type2 keyword notify-events $notify-events 
+	ATTR 1setOf type2 keyword notify-attributes $notify-attributes 
+
+	ATTR integer(0:MAX) notify-lease-duration $notify-lease-duration
+	ATTR integer(0:MAX) notify-time-interval $notify-time-interval
+
+	STATUS successful-ok
+
+	EXPECT attributes-charset OF-TYPE charset IN-GROUP operation-attributes-tag
+	EXPECT attributes-natural-language OF-TYPE naturalLanguage IN-GROUP operation-attributes-tag
+	?EXPECT status-message OF-TYPE text(255) IN-GROUP operation-attributes-tag 
+	?EXPECT detailed-status-message OF-TYPE text(MAX) IN-GROUP operation-attributes-tag
+	
+	EXPECT-ALL notify-status-code OF-TYPE type2 enum IN-GROUP subscription-attributes-tag 
+
+}

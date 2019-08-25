@@ -1,0 +1,54 @@
+#
+# Script to get resources of a system. 
+# This test takes the requested attributes (resource-status) but does not accept other optional attributes (minimal), which includes
+
+# resource-ids (1setOf (integer(1:MAX))
+# first-index (integer(1:MAX))
+# limit (integer(1:MAX)
+# resource-formats (1setOf (mimeMediaType))
+# resource-states (1setOf (type1 enum))
+# resource-types (1setOf (type2 keyword))
+
+# A top-level file/immediate caller will provide the values for $uri: system-uri
+
+# Usage ./ipptool -d uri={system-uri} get-resources-status-minimal.test
+
+
+{
+	NAME "Minimal test to get system resources, with requested attributes set as resource-status but no optional input attributes "
+
+	OPERATION Get-Resources
+	VERSION 2.0
+
+	GROUP operation-attributes-tag
+	ATTR charset attributes-charset utf-8
+	ATTR naturalLanguage attributes-natural-language en
+	ATTR uri system-uri $uri
+	ATTR 1setOf type2 keyword requested-attributes resource-status
+
+	STATUS successful-ok
+
+	EXPECT attributes-charset OF-TYPE charset IN-GROUP operation-attributes-tag
+	EXPECT attributes-natural-language OF-TYPE naturalLanguage IN-GROUP operation-attributes-tag
+	?EXPECT status-message OF-TYPE text(255) IN-GROUP operation-attributes-tag 
+	?EXPECT detailed-status-message OF-TYPE text(MAX) IN-GROUP operation-attributes-tag
+
+	#resource-status-attributes
+	EXPECT-ALL date-time-at-canceled OF-TYPE dateTime|no-value IN-GROUP resource-attributes-tag
+	EXPECT-ALL date-time-at-creation OF-TYPE dateTime|no-value IN-GROUP resource-attributes-tag
+	EXPECT-ALL date-time-at-installed OF-TYPE dateTime|no-value IN-GROUP resource-attributes-tag
+	EXPECT-ALL resource-data-uri OF-TYPE uri|no-value IN-GROUP resource-attributes-tag
+	EXPECT-ALL resource-format OF-TYPE mimeMediaType IN-GROUP resource-attributes-tag
+	EXPECT-ALL resource-id OF-TYPE integer(1:MAX) IN-GROUP resource-attributes-tag
+	EXPECT-ALL resource-k-octets OF-TYPE integer(0:MAX) IN-GROUP resource-attributes-tag
+	EXPECT-ALL resource-state OF-TYPE type1 enum IN-GROUP resource-attributes-tag
+	EXPECT-ALL resource-state-reasons  OF-TYPE 1setOf type2 keyword IN-GROUP resource-attributes-tag
+	EXPECT-ALL resource-string-version OF-TYPE text(MAX)|no-value IN-GROUP resource-attributes-tag
+	EXPECT-ALL resource-type OF-TYPE type2 keyword IN-GROUP resource-attributes-tag
+	EXPECT-ALL resource-use-count OF-TYPE integer(0:MAX) IN-GROUP resource-attributes-tag
+	EXPECT-ALL resource-uuid OF-TYPE uri(45) IN-GROUP resource-attributes-tag
+	EXPECT-ALL resource-version OF-TYPE octetString(64)|no-value IN-GROUP resource-attributes-tag
+	EXPECT-ALL time-at-canceled OF-TYPE integer(MIN:MAX)|no-value IN-GROUP resource-attributes-tag
+	EXPECT-ALL time-at-creation OF-TYPE integer(MIN:MAX)|no-value IN-GROUP resource-attributes-tag
+	EXPECT-ALL time-at-installed OF-TYPE integer(MIN:MAX)|no-value IN-GROUP resource-attributes-tag
+}

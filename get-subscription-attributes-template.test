@@ -1,0 +1,52 @@
+#
+# Script to query a subscription object to enlist its template attributes
+# This test takes the requested attributes with value 'subscription-template' and returns its attributes in regard to the access control mechanisms
+
+#!!! Unfortunately in the current setting we can't check if the returned attributes are exactly what is required . Which means that the user has to manually check if all the feasible attributes are returned.
+
+# A top-level file/immediate caller will provide the values for $uri: system-uri, $notify-subscription-id
+
+# Usage ./ipptool -d uri={system-uri} notify-subscription-id={value} get-subscription-attributes-template.test
+
+{
+	NAME "Get the template subscription attributes of a subscription object: $notify-subscription-id in the system: $system-uri, under access control"
+
+	OPERATION Get-Subscription-Attributes
+	VERSION 2.0
+
+	GROUP operation-attributes-tag
+	ATTR charset attributes-charset utf-8
+	ATTR naturalLanguage attributes-natural-language en
+	ATTR uri system-uri $uri
+	ATTR integer(1:MAX) notify-subscription-id $notify-subscription-id
+	ATTR 1setOf keyword requested-attributes subscription-template
+
+	STATUS successful-ok
+
+	EXPECT attributes-charset OF-TYPE charset IN-GROUP operation-attributes-tag
+	EXPECT attributes-natural-language OF-TYPE naturalLanguage IN-GROUP operation-attributes-tag
+	?EXPECT status-message OF-TYPE text(255) IN-GROUP operation-attributes-tag 
+	?EXPECT detailed-status-message OF-TYPE text(MAX) IN-GROUP operation-attributes-tag
+	
+	#subscription-template-attributes
+	?EXPECT notify-recipient-uri OF-TYPE uri IN-GROUP subscription-attributes-tag
+	?EXPECT notify-pull-method OF-TYPE ype2 keyword IN-GROUP subscription-attributes-tag
+	?EXPECT notify-events  OF-TYPE 1setOf type2 keyword IN-GROUP subscription-attributes-tag
+	?EXPECT notify-attributes  OF-TYPE 1setOf type2 keyword IN-GROUP subscription-attributes-tag
+	?EXPECT notify-user-data  OF-TYPE octetString(63) IN-GROUP subscription-attributes-tag
+	?EXPECT notify-charset  OF-TYPE charset IN-GROUP subscription-attributes-tag
+	?EXPECT notify-natural-language OF-TYPE naturalLanguage IN-GROUP subscription-attributes-tag
+	?EXPECT notify-lease-duration OF-TYPE integer(0:MAX) IN-GROUP subscription-attributes-tag	
+	?EXPECT notify-time-interval OF-TYPE integer(0:MAX) IN-GROUP subscription-attributes-tag
+
+
+	#subscription-description-attributes
+	!EXPECT notify-job-id OF-TYPE integer(1:MAX) IN-GROUP subscription-attributes-tag
+	!EXPECT notify-lease-expiration-time OF-TYPE integer(0:MAX) IN-GROUP subscription-attributes-tag
+	!EXPECT notify-printer-up-time OF-TYPE integer(1:MAX) IN-GROUP subscription-attributes-tag
+	!EXPECT notify-printer-uri OF-TYPE uri IN-GROUP subscription-attributes-tag
+	!EXPECT notify-sequence-number OF-TYPE integer (0:MAX) IN-GROUP subscription-attributes-tag
+	!EXPECT notify-subscriber-user-name OF-TYPE name(MAX) IN-GROUP subscription-attributes-tag
+	!EXPECT notify-subscription-id OF-TYPE integer (1:MAX) IN-GROUP subscription-attributes-tag
+
+}

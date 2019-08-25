@@ -1,0 +1,25 @@
+#Test Script to cancel resource in the system
+# USAGE : will require system-uri : $uri and $resource-id. Will be provided by a top-level file
+# Usage ./ipptool -d uri={system-uri} resource-id={value} cancel-resource.test
+
+{
+	NAME "Cancel a resource on the system"
+
+	OPERATION Cancel-Resource
+	VERSION 2.0
+
+	GROUP operation-attributes-tag
+	ATTR charset attributes-charset utf-8
+	ATTR naturalLanguage attributes-natural-language en
+	ATTR uri system-uri $uri
+	ATTR integer(1:MAX) resource-id $resource-id 
+
+	STATUS successful-ok
+	
+# The System Doc does not lay down return of resource-state (reasons). Which probably should have been returned!
+
+	EXPECT attributes-charset OF-TYPE charset IN-GROUP operation-attributes-tag
+	EXPECT attributes-natural-language OF-TYPE naturalLanguage IN-GROUP operation-attributes-tag
+	?EXPECT status-message OF-TYPE text(255) IN-GROUP operation-attributes-tag 
+	?EXPECT detailed-status-message OF-TYPE text(MAX) IN-GROUP operation-attributes-tag
+} 

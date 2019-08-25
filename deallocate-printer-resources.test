@@ -1,0 +1,28 @@
+#Test Script to deallocate a set of printer resources for a particular printer object
+# USAGE : will require $printer-id, system-uri : $uri and $resource-ids Will be provided by a top-level file
+# Usage ./ipptool -d uri={system-uri} resource-ids={integer values(s)} printer-id={value} deallocate-printer-resources.test
+
+{
+	NAME "Deallocate printer resources $resource-ids from the printer object $printer-id"
+
+	OPERATION Deallocate-Printer-Resources
+	VERSION 2.0
+
+	GROUP operation-attributes-tag
+	ATTR charset attributes-charset utf-8
+	ATTR naturalLanguage attributes-natural-language en
+	ATTR uri system-uri $uri
+	ATTR integer(1:65535) printer-id $printer-id
+	ATTR 1setOf integer(1:MAX) resource-ids $resource-ids
+
+	STATUS successful-ok
+
+	EXPECT attributes-charset OF-TYPE charset IN-GROUP operation-attributes-tag
+	EXPECT attributes-natural-language OF-TYPE naturalLanguage IN-GROUP operation-attributes-tag
+	?EXPECT status-message OF-TYPE text(255) IN-GROUP operation-attributes-tag 
+	?EXPECT detailed-status-message OF-TYPE text(MAX) IN-GROUP operation-attributes-tag
+
+	EXPECT printer-resource-ids OF-TYPE 1setOf integer(1:MAX) IN-GROUP printer-attributes-tag DEFINE-VALUE printer-resource-ids
+	DISPLAY $printer-resource-ids
+} 
+
