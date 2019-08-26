@@ -1,0 +1,50 @@
+#
+# Script to set the values of a subset of system-description attributes. The following attributes will be set:
+# 	power-calendar-policy-col (1setOf collection)
+# 	calendar-id (integer(1:MAX))
+# 	request-power-state (type1 enum)
+# 	run-once (boolean)
+# 	day-of-month (integer(1:31))
+# 	day-of-week (integer(1:7))
+# 	hour (integer(0:23))
+# 	minute (integer(0:59))
+# 	month (integer(1:12))
+
+# This test assumes the presence of these attributes in the "system-settable-attributes-supported" attribute
+
+#!!! Unfortunately in the current setting we can't check if the returned attributes are exactly what is required . Which means that the user has to manually check if all the feasible attributes are returned.
+
+# A top-level file/immediate caller will provide the values for $uri: system-uri, $power-calendar-policy-col, $calendar-id, $request-power-state, $run-once, $day-of-month, $day-of-week, $hour, $minute, $month
+
+# Usage ./ipptool -d uri={system-uri} power-calendar-policy-col={value} calendar-id={value} request-power-state,={value} run-once={value} day-of-month={value} day-of-week={value} hour={value} minute={value} month={value} set-system-attributes-power-calendar.test
+
+{
+	NAME "Set the power-calendar group attributes of the system: $system-uri"
+
+	OPERATION Set-System-Attributes
+	VERSION 2.0
+
+	GROUP operation-attributes-tag
+	ATTR charset attributes-charset utf-8
+	ATTR naturalLanguage attributes-natural-language en
+	ATTR uri system-uri $uri
+	
+	GROUP system-attributes tag
+
+	ATTR 1setOf collection power-calendar-policy-col $power-calendar-policy-col
+	ATTR integer(1:MAX) calendar-id$calendar-id
+	ATTR type1 enum  request-power-state $request-power-state
+	ATTR boolean run-once $run-once
+	ATTR integer(1:31) day-of-month $day-of-month
+	ATTR integer(1:7) day-of-week $day-of-week
+	ATTR integer(0:23) hour $hour
+	ATTR minute (integer(0:59) minute $minute
+	ATTR month (integer(1:12) month $month
+
+	STATUS successful-ok
+
+	EXPECT attributes-charset OF-TYPE charset IN-GROUP operation-attributes-tag
+	EXPECT attributes-natural-language OF-TYPE naturalLanguage IN-GROUP operation-attributes-tag
+	?EXPECT status-message OF-TYPE text(255) IN-GROUP operation-attributes-tag 
+	?EXPECT detailed-status-message OF-TYPE text(MAX) IN-GROUP operation-attributes-tag
+}

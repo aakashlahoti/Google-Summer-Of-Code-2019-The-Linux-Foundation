@@ -1,0 +1,38 @@
+#
+# Script to set the values of a subset of system-description attributes. The following attributes will be set:
+#	power-event-policy-col (1setOf collection)
+#	event-id (integer(1:MAX))
+#	event-name (name(127))
+#	request-power-state (type1 enum)
+
+# This test assumes the presence of these attributes in the "system-settable-attributes-supported" attribute
+
+# A top-level file/immediate caller will provide the values for $uri: system-uri, $power-event-policy-col, $event-id , $event-name , $request-power-state
+
+# Usage ./ipptool -d uri={system-uri} power-event-policy-col={value} event-id={value} event-name={value} request-power-state={value} set-system-attributes-power-event.test
+
+{
+	NAME "Set the power-event group attributes of the system: $system-uri"
+
+	OPERATION Set-System-Attributes
+	VERSION 2.0
+
+	GROUP operation-attributes-tag
+	ATTR charset attributes-charset utf-8
+	ATTR naturalLanguage attributes-natural-language en
+	ATTR uri system-uri $uri
+	
+	GROUP system-attributes tag
+
+	ATTR 1setOf collection power-event-policy-col $power-event-policy-col 
+	ATTR integer(1:MAX) event-id $event-id
+	ATTR name(127) event-name $event-name
+	ATTR type1 enum request-power-state $request-power-state
+
+	STATUS successful-ok
+
+	EXPECT attributes-charset OF-TYPE charset IN-GROUP operation-attributes-tag
+	EXPECT attributes-natural-language OF-TYPE naturalLanguage IN-GROUP operation-attributes-tag
+	?EXPECT status-message OF-TYPE text(255) IN-GROUP operation-attributes-tag 
+	?EXPECT detailed-status-message OF-TYPE text(MAX) IN-GROUP operation-attributes-tag
+}

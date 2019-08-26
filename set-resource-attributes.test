@@ -1,0 +1,38 @@
+# Script to set the values of a resource-description attributes. The following attributes will be set:
+# resource-info (text(MAX))
+# resource-name (name(MAX))
+
+# This test assumes the presence of these attributes in the "resource-settable-attributes-supported" attribute
+
+# A top-level file/immediate caller will provide the values for $uri: system-uri, $resource-id, $resource-info, $resource-name
+
+# Usage ./ipptool -d uri={system-uri} resource-id={value} resource-info={value} resource-name={value} set-resource-attributes.test
+
+{
+	NAME "Set the resource description attributes of the resource $resource-id in the system: $system-uri"
+
+	OPERATION Set-Resource-Attributes
+	VERSION 2.0
+
+	GROUP operation-attributes-tag
+	ATTR charset attributes-charset utf-8
+	ATTR naturalLanguage attributes-natural-language en
+	ATTR uri system-uri $uri
+	
+	GROUP resource-attributes tag
+
+	ATTR text(MAX) resource-info $resource-info
+	ATTR name(MAX)resource-name $resource-name
+
+	STATUS successful-ok
+
+	EXPECT attributes-charset OF-TYPE charset IN-GROUP operation-attributes-tag
+	EXPECT attributes-natural-language OF-TYPE naturalLanguage IN-GROUP operation-attributes-tag
+	?EXPECT status-message OF-TYPE text(255) IN-GROUP operation-attributes-tag 
+	?EXPECT detailed-status-message OF-TYPE text(MAX) IN-GROUP operation-attributes-tag
+
+	EXPECT resource-id OF-TYPE integer(1:MAX) IN-GROUP resource-attributes-tag
+	EXPECT resource-uuid OF-TYPE uri(45) IN-GROUP resource-attributes-tag
+	EXPECT resource-state OF-TYPE type1 enum IN-GROUP resource-attributes-tag
+	EXPECT resource-state-reasons OF-TYPE 1setOf type2 keyword IN-GROUP resource-attributes-tag 	
+}

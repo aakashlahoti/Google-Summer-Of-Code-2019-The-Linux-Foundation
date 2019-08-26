@@ -1,0 +1,36 @@
+# ! ONLY if the feature is supported
+#
+# Script register an output device for a target system object
+# NOTE: Systems that conform to the IPP Shared Infrastructure Extensions [PWG5100.18] MUST support this operation
+
+# A top-level file/immediate caller will provide the values for $uri: system-uri, $output-device-uuid, $printer-service-type, 
+
+# Usage ./ipptool -d uri={system-uri} output-device-uuid={value} printer-service-type={value} register-output-device.test
+
+{
+	NAME "Register an output device:$output-device-uuid on the system: $system-uri"
+
+	OPERATION Register-Output-Device
+	VERSION 2.0
+
+	GROUP operation-attributes-tag
+	ATTR charset attributes-charset utf-8
+	ATTR naturalLanguage attributes-natural-language en
+	ATTR uri system-uri $uri
+	ATTR uri(45) output-device-uuid $output-device-uuid
+	ATTR type2 keyword printer-service-type $printer-service-type
+
+	STATUS successful-ok
+
+	EXPECT attributes-charset OF-TYPE charset IN-GROUP operation-attributes-tag
+	EXPECT attributes-natural-language OF-TYPE naturalLanguage IN-GROUP operation-attributes-tag
+	?EXPECT status-message OF-TYPE text(255) IN-GROUP operation-attributes-tag 
+	?EXPECT detailed-status-message OF-TYPE text(MAX) IN-GROUP operation-attributes-tag
+
+	EXPECT printer-id OF-TYPE integer(1:65535) IN-GROUP printer-attributes-tag
+	EXPECT printer-uuid OF-TYPE uri(45) IN-GROUP printer-attributes-tag
+	EXPECT printer-xri-supported OF-TYPE 1setOf collection IN-GROUP printer-attributes-tag
+	EXPECT printer-state OF-TYPE type1 enum IN-GROUP printer-attributes-tag
+	EXPECT printer-state-reasons OF-TYPE 1setOf type2 keyword IN-GROUP printer-attributes-tag
+	EXPECT printer-is-accepting-job OF-TYPE boolean IN-GROUP printer-attributes-tag
+}

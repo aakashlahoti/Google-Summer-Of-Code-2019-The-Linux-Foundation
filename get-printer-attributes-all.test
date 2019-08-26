@@ -1,0 +1,67 @@
+#
+# Script to query the default printer to enlist 'all' its attributes
+# This test takes the requested attributes with value 'all' and returns its attributes in regard to the access control mechanisms
+
+#!!! Unfortunately in the current setting we can't check if the returned attributes are exactly what is required . Which means that the user has to manually check if all the feasible attributes are returned.
+
+# It is highly recommended that the tester provides the document-format attribute. If the union of all supports is required, you should provide the value of the attribute as 'application/octet-stream'.
+
+# A top-level file/immediate caller will provide the values for $uri: system-uri, $document-format
+
+# Usage ./ipptool -d uri={system-uri} notify-subscription-id={value} get-printer-attributes-all.test
+
+{
+	NAME "Get all the default printer attributes in the system: $system-uri, under access control"
+
+	OPERATION Get-Printer-Attributes
+	VERSION 2.0
+
+	GROUP operation-attributes-tag
+	ATTR charset attributes-charset utf-8
+	ATTR naturalLanguage attributes-natural-language en
+	ATTR uri system-uri $uri
+	ATTR 1setOf keyword requested-attributes all
+	ATTR mimeMediaType document-format $document-format
+
+	STATUS successful-ok
+
+	EXPECT attributes-charset OF-TYPE charset IN-GROUP operation-attributes-tag
+	EXPECT attributes-natural-language OF-TYPE naturalLanguage IN-GROUP operation-attributes-tag
+	?EXPECT status-message OF-TYPE text(255) IN-GROUP operation-attributes-tag 
+	?EXPECT detailed-status-message OF-TYPE text(MAX) IN-GROUP operation-attributes-tag
+	
+	#job-template-attributes
+	EXPECT job-priority OF-TYPE integer IN-GROUP job-attributes-tag
+	EXPECT job-hold-until OF-TYPE type3 keyword|name IN-GROUP job-attributes-tag
+	EXPECT job-sheets OF-TYPE type3 keyword|name IN-GROUP job-attributes-tag
+	EXPECT multiple-document-handling OF-TYPE type2 keyword IN-GROUP job-attributes-tag
+	EXPECT copies OF-TYPE integer (1:MAX) IN-GROUP job-attributes-tag 
+	EXPECT finishings OF-TYPE 1setOf type2 enum IN-GROUP job-attributes-tag
+	EXPECT sides OF-TYPE type2 keyword IN-GROUP job-attributes-tag
+	EXPECT orientation-requested OF-TYPE type2 enum IN-GROUP job-attributes-tag
+	EXPECT number-up OF-TYPE integer (1:MAX) IN-GROUP job-attributes-tag
+	EXPECT media OF-TYPE type3 keyword|name IN-GROUP job-attributes-tag
+	EXPECT printer-resolution OF-TYPE resolution IN-GROUP job-attributes-tag
+	EXPECT print-quality OF-TYPE type2 enum IN-GROUP job-attributes-tag
+
+	#required-printer-description-attributes
+	EXPECT printer-uri-supported OF-TYPE 1setOf uri IN-GROUP printer-attributes-tag
+	EXPECT uri-security-supported  OF-TYPE 1setOf type2 keyword IN-GROUP printer-attributes-tag
+	EXPECT uri-authentication-supported OF-TYPE 1setOf type2 keyword IN-GROUP printer-attributes-tag
+	EXPECT printer-name OF-TYPE name IN-GROUP printer-attributes-tag
+	EXPECT printer-state  OF-TYPE type1 enum IN-GROUP printer-attributes-tag
+	EXPECT printer-state-reasons OF-TYPE 1setOf type2 keyword IN-GROUP printer-attributes-tag
+	EXPECT ipp-versions-supported OF-TYPE 1setOf type2 keyword IN-GROUP printer-attributes-tag
+	EXPECT operations-supported OF-TYPE 1setOf type2 enum IN-GROUP printer-attributes-tag
+	EXPECT charset-configured OF-TYPE charset IN-GROUP printer-attributes-tag
+	EXPECT charset-supported  OF-TYPE 1setOf charset IN-GROUP printer-attributes-tag
+	EXPECT natural-language-configured OF-TYPE naturalLanguage IN-GROUP printer-attributes-tag
+	EXPECT generated-natural-language-supported OF-TYPE 1setOf naturalLanguage IN-GROUP printer-attributes-tag
+	EXPECT document-format-default OF-TYPE mimeMediaType IN-GROUP printer-attributes-tag
+	EXPECT document-format-supported OF-TYPE 1setOf mimeMediaType IN-GROUP printer-attributes-tag
+	EXPECT printer-is-accepting-jobs OF-TYPE boolean IN-GROUP printer-attributes-tag
+	EXPECT queued-job-count OF-TYPE integer (0:MAX) IN-GROUP printer-attributes-tag
+	EXPECT pdl-override-supported OF-TYPE type2 keyword IN-GROUP printer-attributes-tag
+	EXPECT printer-up-time OF-TYPE integer (1:MAX) IN-GROUP printer-attributes-tag
+	EXPECT compression-supported OF-TYPE 1setOf type3 keyword IN-GROUP printer-attributes-tag
+}

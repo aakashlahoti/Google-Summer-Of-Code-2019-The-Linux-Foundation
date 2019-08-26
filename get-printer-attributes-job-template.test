@@ -1,0 +1,46 @@
+#
+# Script to query the default printer to enlist its job-template attributes
+# This test takes the requested attributes with value 'job-template' and returns its attributes in regard to the access control mechanisms
+
+#!!! Unfortunately in the current setting we can't check if the returned attributes are exactly what is required . Which means that the user has to manually check if all the feasible attributes are returned.
+
+# It is highly recommended that the tester provides the document-format attribute. If the union of all supports is required, you should provide the value of the attribute as 'application/octet-stream'.
+
+# A top-level file/immediate caller will provide the values for $uri: system-uri, $document-format
+
+# Usage ./ipptool -d uri={system-uri} notify-subscription-id={value} get-printer-attributes-job-template.test
+
+{
+	NAME "Get the default printer job-template attributes in the system: $system-uri, under access control"
+
+	OPERATION Get-Printer-Attributes
+	VERSION 2.0
+
+	GROUP operation-attributes-tag
+	ATTR charset attributes-charset utf-8
+	ATTR naturalLanguage attributes-natural-language en
+	ATTR uri system-uri $uri
+	ATTR 1setOf keyword requested-attributes job-template
+	ATTR mimeMediaType document-format $document-format
+
+	STATUS successful-ok
+
+	EXPECT attributes-charset OF-TYPE charset IN-GROUP operation-attributes-tag
+	EXPECT attributes-natural-language OF-TYPE naturalLanguage IN-GROUP operation-attributes-tag
+	?EXPECT status-message OF-TYPE text(255) IN-GROUP operation-attributes-tag 
+	?EXPECT detailed-status-message OF-TYPE text(MAX) IN-GROUP operation-attributes-tag
+	
+	#job-template-attributes
+	EXPECT job-priority OF-TYPE integer IN-GROUP job-attributes-tag
+	EXPECT job-hold-until OF-TYPE type3 keyword|name IN-GROUP job-attributes-tag
+	EXPECT job-sheets OF-TYPE type3 keyword|name IN-GROUP job-attributes-tag
+	EXPECT multiple-document-handling OF-TYPE type2 keyword IN-GROUP job-attributes-tag
+	EXPECT copies OF-TYPE integer (1:MAX) IN-GROUP job-attributes-tag 
+	EXPECT finishings OF-TYPE 1setOf type2 enum IN-GROUP job-attributes-tag
+	EXPECT sides OF-TYPE type2 keyword IN-GROUP job-attributes-tag
+	EXPECT orientation-requested OF-TYPE type2 enum IN-GROUP job-attributes-tag
+	EXPECT number-up OF-TYPE integer (1:MAX) IN-GROUP job-attributes-tag
+	EXPECT media OF-TYPE type3 keyword|name IN-GROUP job-attributes-tag
+	EXPECT printer-resolution OF-TYPE resolution IN-GROUP job-attributes-tag
+	EXPECT print-quality OF-TYPE type2 enum IN-GROUP job-attributes-tag
+}

@@ -1,0 +1,34 @@
+# Script to print a uri using a template-job-resource
+# Make sure that the Printer    supports the retrieval method (e.g., http, ftp, etc.) implied by your URI
+# A top-level file/immediate caller will provide the values for $uri: system-uri, $resources-ids, $document-uri
+
+# Usage ./ipptool -d uri={system-uri} resources-ids={values} document-uri={value} print-uri-withJobTemplate.test
+
+# Do include a template-job-resource in the resource-ids. You can include only one such template-job-resource. Also resource-ids may consist of other static-resources.
+
+{
+	NAME "Print document on a URI with template-job and other resources : $resource-ids, on the system: $system-uri"
+
+	OPERATION Print-Job
+	VERSION 2.0
+
+	GROUP operation-attributes-tag
+	ATTR charset attributes-charset utf-8
+	ATTR naturalLanguage attributes-natural-language en
+	ATTR uri system-uri $uri
+	ATTR 1setOf integer(1:MAX) resources-ids $resources-ids
+	ATTR uri document-uri $document-uri
+
+	STATUS successful-ok
+
+	EXPECT attributes-charset OF-TYPE charset IN-GROUP operation-attributes-tag
+	EXPECT attributes-natural-language OF-TYPE naturalLanguage IN-GROUP operation-attributes-tag
+	?EXPECT status-message OF-TYPE text(255) IN-GROUP operation-attributes-tag 
+	?EXPECT detailed-status-message OF-TYPE text(MAX) IN-GROUP operation-attributes-tag
+
+	EXPECT job-uri OF-TYPE uri IN-GROUP job-attributes-tag
+	EXPECT job-id OF-TYPE integer(1:MAX) IN-GROUP job-attributes-tag
+	EXPECT job-state OF-TYPE type1 enum IN-GROUP job-attributes-tag
+	EXPECT job-state-reasons OF-TYPE 1setOf type2 keywordIN-GROUP job-attributes-tag
+
+}

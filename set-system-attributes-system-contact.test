@@ -1,0 +1,38 @@
+#
+# Script to set the values of a subset of system-description attributes. The following attributes will be set:
+#	system-contact-col (collection | unknown)
+#	contact-name (name(MAX))
+#	contact-uri (uri)
+#	contact-vcard (1setOf text(MAX))
+
+# This test assumes the presence of these attributes in the "system-settable-attributes-supported" attribute
+
+# A top-level file/immediate caller will provide the values for $uri: system-uri, $system-contact-col, $contact-name, $contact-uri , $contact-vcard
+
+# Usage ./ipptool -d uri={system-uri} system-contact-col={value} contact-name={value} contact-uri={value} contact-vcard={value} set-system-attributes-system-contact.test
+
+{
+	NAME "Set the system-contact group attributes of the system: $system-uri"
+
+	OPERATION Set-System-Attributes
+	VERSION 2.0
+
+	GROUP operation-attributes-tag
+	ATTR charset attributes-charset utf-8
+	ATTR naturalLanguage attributes-natural-language en
+	ATTR uri system-uri $uri
+	
+	GROUP system-attributes tag
+
+	ATTR collection|unknown system-contact-col $system-contact-col
+	ATTR name(MAX) contact-name $contact-name
+	ATTR uri contact-uri $contact-uri
+	ATTR 1setOf text(MAX) contact-vcard $contact-vcard
+
+	STATUS successful-ok
+
+	EXPECT attributes-charset OF-TYPE charset IN-GROUP operation-attributes-tag
+	EXPECT attributes-natural-language OF-TYPE naturalLanguage IN-GROUP operation-attributes-tag
+	?EXPECT status-message OF-TYPE text(255) IN-GROUP operation-attributes-tag 
+	?EXPECT detailed-status-message OF-TYPE text(MAX) IN-GROUP operation-attributes-tag
+}

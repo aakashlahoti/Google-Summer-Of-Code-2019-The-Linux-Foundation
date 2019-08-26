@@ -1,0 +1,40 @@
+#
+# Script to set the values of a subset of system-description attributes. The following attributes will be set:
+#	system-default-printer-id (integer(1:65535) | no-value)
+#	ippget-event-life (integer(15:MAX))
+#	charset-configured (charset)
+#	natural-language-configured (naturalLanguage)
+
+## More attributes may be added!
+
+# This test assumes the presence of these attributes in the "system-settable-attributes-supported" attribute
+
+# A top-level file/immediate caller will provide the values for $uri: system-uri, $system-default-printer-id, $ippget-event-life, $charset-configured, $natural-language-configured
+
+# Usage ./ipptool -d uri={system-uri} system-default-printer-id={value} ippget-event-life={value} charset-configured={value} natural-language-configured={value} set-system-attributes-default-configured.test
+
+{
+	NAME "Set some of the defaults and configured description attributes of the system: $system-uri"
+
+	OPERATION Set-System-Attributes
+	VERSION 2.0
+
+	GROUP operation-attributes-tag
+	ATTR charset attributes-charset utf-8
+	ATTR naturalLanguage attributes-natural-language en
+	ATTR uri system-uri $uri
+	
+	GROUP system-attributes tag
+
+	ATTR integer(1:65535)|no-value system-default-printer-id $system-default-printer-id
+	ATTR integer(15:MAX) ippget-event-life $ippget-event-life
+	ATTR charset charset-configured $charset-configured
+	ATTR naturalLanguage natural-language-configured $natural-language-configured
+
+	STATUS successful-ok
+
+	EXPECT attributes-charset OF-TYPE charset IN-GROUP operation-attributes-tag
+	EXPECT attributes-natural-language OF-TYPE naturalLanguage IN-GROUP operation-attributes-tag
+	?EXPECT status-message OF-TYPE text(255) IN-GROUP operation-attributes-tag 
+	?EXPECT detailed-status-message OF-TYPE text(MAX) IN-GROUP operation-attributes-tag
+}

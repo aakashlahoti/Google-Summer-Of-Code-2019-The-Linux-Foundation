@@ -1,0 +1,36 @@
+#
+# Script to set the values of a subset of system-description attributes. The following attributes will be set:
+#	xri-uri (uri)
+#	xri-authentication (type2 keyword)
+#	xri-security (type2 keyword)
+
+# This test assumes the presence of these attributes in the "system-settable-attributes-supported" attribute
+
+# A top-level file/immediate caller will provide the values for $uri: system-uri, $xri-uri, $xri-authentication, $xri-security
+
+# Usage ./ipptool -d uri={system-uri} xri-uri={value} xri-authentication={value} xri-security={value} set-system-attributes-xri-uri.test
+
+{
+	NAME "Set the xri-uri group description attributes of the system: $system-uri"
+
+	OPERATION Set-System-Attributes
+	VERSION 2.0
+
+	GROUP operation-attributes-tag
+	ATTR charset attributes-charset utf-8
+	ATTR naturalLanguage attributes-natural-language en
+	ATTR uri system-uri $uri
+	
+	GROUP system-attributes tag
+
+	ATTR uri xri-uri $xri-uri
+	ATTR type2 keyword xri-authentication $xri-authentication
+	ATTR type2 keyword xri-security $xri-security
+
+	STATUS successful-ok
+
+	EXPECT attributes-charset OF-TYPE charset IN-GROUP operation-attributes-tag
+	EXPECT attributes-natural-language OF-TYPE naturalLanguage IN-GROUP operation-attributes-tag
+	?EXPECT status-message OF-TYPE text(255) IN-GROUP operation-attributes-tag 
+	?EXPECT detailed-status-message OF-TYPE text(MAX) IN-GROUP operation-attributes-tag
+}

@@ -1,0 +1,44 @@
+#
+# Script to set the values of a subset of system-description attributes. The following attributes will be set:
+#	system-current-time (dateTime)
+#	system-geo-location (uri | unknown)
+#	system-info (text(127))
+#	system-location (text(127))
+#	system-make-and-model (text(127))
+#	system-message-from-operator (text(127))
+#	system-name (name(127))
+
+# This test assumes the presence of these attributes in the "system-settable-attributes-supported" attribute
+
+# A top-level file/immediate caller will provide the values for $uri: system-uri, $system-current-time ,$system-geo-location ,$system-info ,$system-location ,$system-make-and-model, $system-message-from-operator
+
+# Usage ./ipptool -d uri={system-uri} system-current-time={value} system-geo-location={value} system-info={value} system-location={value} system-make-and-model={value} system-message-from-operator={value} set-system-attributes-general.test
+
+{
+	NAME "Set the generic description attributes of the system: $system-uri"
+
+	OPERATION Set-System-Attributes
+	VERSION 2.0
+
+	GROUP operation-attributes-tag
+	ATTR charset attributes-charset utf-8
+	ATTR naturalLanguage attributes-natural-language en
+	ATTR uri system-uri $uri
+	
+	GROUP system-attributes tag
+
+	ATTR dateTime system-current-time $system-current-time
+	ATTR uri|unknown system-geo-location $system-geo-location
+	ATTR text(127) system-info $system-info
+	ATTR text(127) system-location $system-location
+	ATTR text(127) system-make-and-model $system-make-and-model
+	ATTR text(127) system-message-from-operator $system-message-from-operator
+	ATTR name(127)system-name $system-name
+
+	STATUS successful-ok
+
+	EXPECT attributes-charset OF-TYPE charset IN-GROUP operation-attributes-tag
+	EXPECT attributes-natural-language OF-TYPE naturalLanguage IN-GROUP operation-attributes-tag
+	?EXPECT status-message OF-TYPE text(255) IN-GROUP operation-attributes-tag 
+	?EXPECT detailed-status-message OF-TYPE text(MAX) IN-GROUP operation-attributes-tag
+}

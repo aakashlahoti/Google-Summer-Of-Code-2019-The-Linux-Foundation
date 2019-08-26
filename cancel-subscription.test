@@ -1,0 +1,29 @@
+#
+# Script to delete a subscription object, this prevents referencing this object in the future
+
+#!!! Unfortunately in the current setting we can't check if the returned attributes are exactly what is required . Which means that the user has to manually check if all the feasible attributes are returned.
+
+# A top-level file/immediate caller will provide the values for $uri: system-uri, $notify-subscription-id
+
+# Usage ./ipptool -d uri={system-uri} notify-subscription-id={value} cancel-subscription.test
+
+{
+	NAME "Cancel the subscription object with id: $notify-subscription-id on the system: $uri"
+
+	OPERATION Cancel-Subscription
+	VERSION 2.0
+
+	GROUP operation-attributes-tag
+	ATTR charset attributes-charset utf-8
+	ATTR naturalLanguage attributes-natural-language en
+	ATTR uri system-uri $uri
+	ATTR integer(1:MAX) notify-subscription-id $notify-subscription-id
+
+	STATUS successful-ok
+
+	EXPECT attributes-charset OF-TYPE charset IN-GROUP operation-attributes-tag
+	EXPECT attributes-natural-language OF-TYPE naturalLanguage IN-GROUP operation-attributes-tag
+	?EXPECT status-message OF-TYPE text(255) IN-GROUP operation-attributes-tag 
+	?EXPECT detailed-status-message OF-TYPE text(MAX) IN-GROUP operation-attributes-tag
+	
+}

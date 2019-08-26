@@ -1,0 +1,31 @@
+#
+# Script to allocate a resource to a printer object
+#
+# A top-level file/immediate caller will provide the values for $uri: system-uri, $resource-ids, $printer-id
+#
+# Usage ./ipptool -d uri={system-uri} resource-ids={value} printer-id={value} allocate-printer-resources.test
+
+{
+	NAME "Allocate-Printer-Resources $resource-ids to Printer $printer-id"
+
+	OPERATION Allocate-Printer-Resources
+	VERSION 2.0
+
+	GROUP operation-attributes-tag
+	ATTR charset attributes-charset utf-8
+	ATTR naturalLanguage attributes-natural-language en
+	ATTR uri system-uri $uri
+	ATTR 1setOf integer(1:MAX) resource-ids $resource-ids
+	ATTR integer(1:65535) printer-id $printer-id
+
+	STATUS successful-ok
+
+	EXPECT attributes-charset OF-TYPE charset IN-GROUP operation-attributes-tag
+	EXPECT attributes-natural-language OF-TYPE naturalLanguage IN-GROUP operation-attributes-tag
+	EXPECT status-message OF-TYPE text(255) IN-GROUP operation-attributes-tag
+	EXPECT detailed-status-message OF-TYPE text(MAX) IN-GROUP operation-attributes-tag
+	
+	EXPECT printer-resource-ids OF-TYPE 1setOf integer(1:MAX) IN-GROUP printer-attributes-tag DEFINE_VALUE printer-resource-ids
+	
+	DISPLAY printer-resource-ids
+} 

@@ -1,0 +1,50 @@
+#
+# Script to find resources of a printer on the system.
+# This test takes the following attributes for input:
+#	printer-uri 
+#	resource-ids 
+#	first-index  
+#	limit 
+#	requested-attributes 
+#	resource-formats 
+#	resource-states 
+#	resource-types 
+
+#!!! Unfortunately in the current setting we can't check if the returned attributes are exactly what is required . Which means that the user has to manually check if all the feasible attributes are returned.
+
+# A top-level file/immediate caller will provide the values for $uri: system-uri, $resource-ids, $first-index, $limit, $requested-attributes, $resource-formats, $resource-states, $resource-types 
+
+
+# Usage ./ipptool -d uri={system-uri} resource-ids={value} first-index={value} limit={value} requested-attributes={value} resource-formats={value} resource-states={value} resource-types={value} get-printer-resources.test
+
+{
+	NAME "Search for Resources of a Printer"
+
+	OPERATION Get-Printer-Resources
+	VERSION 2.0
+
+	GROUP operation-attributes-tag
+	ATTR charset attributes-charset utf-8
+	ATTR naturalLanguage attributes-natural-language en
+	ATTR uri printer-uri $uri
+	ATTR 1setOf (integer(1:MAX)) resource-ids $resource-ids
+	ATTR integer(1:MAX) first-index $first-index 
+	ATTR integer(1:MAX) limit $limit
+	ATTR 1setOf (type2 keyword) requested-attributes $requested-attributes
+	ATTR 1setOf (mimeMediaType) resource-formats $resource-formats
+	ATTR 1setOf (type1 enum) resource-states $resource-states
+	ATTR 1setOf (type2 keyword) resource-types $resource-types
+
+	STATUS successful-ok
+
+	EXPECT attributes-charset OF-TYPE charset IN-GROUP operation-attributes-tag
+	EXPECT attributes-natural-language OF-TYPE naturalLanguage IN-GROUP operation-attributes-tag
+	EXPECT status-message OF-TYPE text(255) IN-GROUP operation-attributes-tag
+	EXPECT detailed-status-message OF-TYPE text(MAX) IN-GROUP operation-attributes-tag
+
+	EXPECT resource-id OF_TYPE (integer(1:MAX)) IN-GROUP resource-attributes-tag
+	EXPECT resource-uuid OF-TYPE uri(45) IN-GROUP resource-attributes-tag
+	EXPECT resource-state OF-TYPE (type1 enum) IN-GROUP resource-attributes-tag
+	EXPECT resource-state-reasons OF-TYPE (1setOf type2 keyword) IN-GROUP resource-attributes-tag
+
+} 
