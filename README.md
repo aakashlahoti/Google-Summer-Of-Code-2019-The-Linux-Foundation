@@ -19,19 +19,16 @@ IPP System Service is an organization-wide framework being developed by the Prin
 An ipptoolfile is a file that satisfies a predefined syntax and contains all information to be included in a request to be issued to a printer by ipptool. Apart from that, it also includes information to be expected in a response from the printer.
 
 ## Project Work
-Pull request for my code into the **ippsample** repository can be found here: 
+I will issue a pull-request for the project soon on the organization repository: https://github.com/istopwg/ippsample
 
 This repository contains the test-suite, that is a set of ipptest-files to check the conformance of a given system with the IPP System Service Standards. System managers can use these test-files to verify the status of different components like system,printers and resources under different system operations.
 
-I have written test files for the following 
-
+I have written a total of 76 test files for the purposes of this project. The create-printer test file still requires a few changes.
 
 ## Future Work
--Changing the test scripts according to the parser support for some data-types for the "OF-TYPE" predicate of the ipptool-file
-
--Change scripts to adjust to any changes in the ipptool program which supports dynamic (runtime dependent variable) testing
-
--Include COUNT predicate wherever necessary (TBD ASAP)
+- The current parser does not support parenthesis for data-types for the OF-TYPE predicate. Currently, one has to manually do few changes before running the test script. We'll introduce a transient parenthesis-devoid version soon.
+- To alleviate the problem of manually running so many test, we will develop a bash script that will do the same.
+- If there are changes to the ipptoolfile that supports dynamic testing, these files will have to be modified or replaced
 
 ## Acknowledgements
 I would like to extend my heart-felt gratitude to Mr. Michael Sweet, who helped me through all of the technical difficulties encountered in this project. Needless to say, without his guidance, none of this work would have been possible. I would also like to thank my mentors Ira McDonald, Danny Brennan, Till Kamppeter and Aveek Basu. I would also like to specially thank Aveek for his administrative, technical and moral support throughout my journey at the Open Prinitng Division of Linux Foundation.
